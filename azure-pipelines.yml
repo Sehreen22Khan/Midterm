@@ -1,5 +1,5 @@
 variables:
-  azureSubscription: '96e63bc2-1434-4aea-b397-8f45ef8f40d8'
+  azureSubscription: 'sg-connection'
   appName: 'sehreen-gazala-webapp'
   registryName: 'khanregistry'
   imageName: 'sehreen-gazala-webapp-image'
@@ -17,7 +17,7 @@ steps:
 # Build and push Docker image to Azure Container Registry
 - task: Docker@2
   inputs:
-    containerRegistry: '$(azureSubscription)_$(registryName)'
+    containerRegistry: '$(registryName)'
     repository: '$(imageName)'
     command: 'buildAndPush'
     Dockerfile: 'Task2/Dockerfile'
