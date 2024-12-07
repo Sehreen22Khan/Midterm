@@ -1,0 +1,33 @@
+variables:
+  azureSubscription: '96e63bc2-1434-4aea-b397-8f45ef8f40d8'
+  appName: 'sehreen-gazala-webapp'
+  registryName: 'khanregistry'
+  imageName: 'sehreen-gazala-webapp-image'
+
+steps:
+# Log in to Azure Container Registry
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: '$(azureSubscription)'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      az acr login --name $(registryName)
+
+# Build and push Docker image to Azure Container Registry
+- task: Docker@2
+  inputs:
+    containerRegistry: '$(azureSubscription)_$(registryName)'
+    repository: '$(imageName)'
+    command: 'buildAndPush'
+    Dockerfile: 'Task2/Dockerfile'
+    tags: |
+      latest
+
+# Deploy to Azure App Service
+- task: AzureWebAppContainer@1
+  inputs:
+    azureSubscription: '$(azureSubscription)'
+    appName: '$(appName)'
+    containers: |
+      $(registryName).azurecr.io/$(imageName):latest
